@@ -1,32 +1,18 @@
 # log4d
 
-[![pub package](https://img.shields.io/pub/v/log4d.svg)](https://pub.dartlang.org/packages/log4d)
-[![GitHub stars](https://img.shields.io/github/stars/caijinglong/log4d.svg?style=social&label=Stars)](https://github.com/caijinglong/log4d)
-![GitHub](https://img.shields.io/github/license/Caijinglong/log4d.svg)
-
-A dart logging tool.
-
-Create a Server with shell.
-
-And use `dart` code to create a client.
+dart的c/s 结构，用于远程打印log到本地
 
 ## Document
 
-[Document](https://github.com/CaiJingLong/log4d-doc/blob/master/SUMMARY.md)
+vscode安装log viewer插件或者自行使用能够监听process.log的软件
 
-[Gitbook Version](https://caijinglong.gitbooks.io/document-with-log4d/content/)
+## 终端操作
+cd ../bin
+dart log4d.dart -o ../rqyuyin/process.log -h localip // 启动本地服务器，默认端口8899
+dart log4d.dart -o ../rqyuyin/process.log -h localip -p 10086// 启动本地服务器，指定端口10086
+
+## flutter项目里操作(DEBUG环境下)
+await RQLogOutput.initRemoteLog('172.18.4.208');
+await RQLogOutput.initRemoteLog('172.18.4.208', port: 10086);
 
 ## LICENSE
-
-the package under BSD-3
-
-some copy from other library
-
-Under MIT:
-
-- [dye](https://github.com/Andruj/dye)
-- [log](https://github.com/Andruj/log)
-
-Under Apache 2.0:
-
-- [ansicolor](https://pub.dartlang.org/packages/ansicolor)
