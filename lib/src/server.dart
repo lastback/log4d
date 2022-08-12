@@ -8,6 +8,7 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 
 class Log4dServer {
+  String host;
   int port;
 
   bool showConsole;
@@ -16,22 +17,18 @@ class Log4dServer {
 
   String outPath;
 
-  File logFile;
+  late File logFile;
 
   Log4dServer({
-    int port = 8899,
-    String outpath,
-    bool showConsole = true,
-    bool split = false,
+    this.host = 'localhost',
+    this.port = 8899,
+    required this.outPath,
+    this.showConsole = false,
+    this.split = false,
   }) {
-    this.port = port ??= 8899;
-    this.showConsole = showConsole ??= true;
-    this.split = split ??= false;
-    this.outPath = outpath;
+    logFile = File(outPath);
 
-    if (outpath != null) this.logFile = File(outpath);
-
-    if (logFile?.existsSync() == false) {
+    if (logFile.existsSync() == false) {
       logFile.createSync(recursive: true);
     }
 
@@ -46,9 +43,9 @@ class Log4dServer {
           .onDone(_onDone);
     });
 
-    HttpServer server = await shelf_io.serve(handler, 'localhost', port);
+    HttpServer server = await shelf_io.serve(handler, host, port);
 
-    var successText = "log4j serve at ws://localhost:$port";
+    var successText = "log4j serve at ws://$host:$port";
     Log.success(successText);
 
     ProcessSignal.sigint.watch().listen((data) {
@@ -66,54 +63,54 @@ class Log4dServer {
 
   void _onListen(channel, event) {
     if (event is String) {
-      var entity = LogEntity.fromString(event);
+      // var entity = LogEntity.fromString(event);
 
-      if (entity == null) {
-        channel.sink.add("$event is must be ${LogEntity}");
-        return;
-      }
-      String logText;
+      // if (entity == null) {
+      //   channel.sink.add("$event is must be ${LogEntity}");
+      //   return;
+      // }
+      // String logText;
 
-      var color;
-      switch (entity.level) {
-        case Level.debug:
-          color = gray;
-          break;
-        case Level.info:
-          color = green;
-          break;
-        case Level.warning:
-          color = magenta;
-          break;
-        case Level.error:
-          color = red;
-          break;
-      }
+      // var color;
+      // switch (entity.level) {
+      //   case Level.debug:
+      //     color = gray;
+      //     break;
+      //   case Level.info:
+      //     color = green;
+      //     break;
+      //   case Level.warning:
+      //     color = magenta;
+      //     break;
+      //   case Level.error:
+      //     color = red;
+      //     break;
+      // }
 
-      String dt() {
-        return new DateTime.now().toString().substring(11, 19);
-      }
+      // String dt() {
+      //   return new DateTime.now().toString().substring(11, 19);
+      // }
 
-      if (entity.force) {
-        logText = entity.msg;
-      } else if (entity.showTime && entity.showColor) {
-        logText = color("[${color(dt())}] ${entity.msg}");
-      } else if (entity.showTime) {
-        logText = "[${dt()}] ${entity.msg}";
-      } else if (entity.showColor) {
-        logText = color(entity.msg);
-      } else {
-        logText = entity.msg;
-      }
+      // if (entity.force) {
+      //   logText = entity.msg;
+      // } else if (entity.showTime && entity.showColor) {
+      //   logText = color("[${color(dt())}] ${entity.msg}");
+      // } else if (entity.showTime) {
+      //   logText = "[${dt()}] ${entity.msg}";
+      // } else if (entity.showColor) {
+      //   logText = color(entity.msg);
+      // } else {
+      //   logText = entity.msg;
+      // }
 
-      if (this.showConsole) print(logText);
+      if (this.showConsole) print(event);
 
-      _writeToLog(logText);
+      _writeToLog(event);
     }
   }
 
   void _writeToLog(String msg) {
-    logFile?.writeAsStringSync(
+    logFile.writeAsStringSync(
       "$msg\n",
       mode: FileMode.append,
       flush: true,

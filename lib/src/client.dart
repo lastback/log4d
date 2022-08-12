@@ -6,7 +6,7 @@ class Log4dClient {
   int port;
   String host;
 
-  WebSocket ws;
+  WebSocket? ws;
 
   Log4dClient({
     this.port = 8899,
@@ -14,8 +14,8 @@ class Log4dClient {
   });
 
   Future connect() async {
-    ws = await WebSocket.connect("ws://$host:8899");
-    ws.listen((data) {
+    ws = await WebSocket.connect('ws://$host:$port/ws');
+    ws?.listen((data) {
       print("receive: $data");
     });
   }
@@ -39,6 +39,10 @@ class Log4dClient {
 
   void sendEntity(LogEntity entity) {
     ws?.add(entity.toJson());
+  }
+
+  void sendString(String msg) {
+    ws?.add(msg);
   }
 
   void disconnect() {

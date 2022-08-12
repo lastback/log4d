@@ -4,8 +4,10 @@ import 'package:args/args.dart';
 main(List<String> args) {
   var parser = ArgParser();
   parser.addOption('output', abbr: 'o', help: "output path");
+  parser.addOption('host',
+      abbr: 'h', help: "server host", defaultsTo: "localhost");
   parser.addOption('port', abbr: 'p', help: "server port", defaultsTo: "8899");
-  parser.addFlag('help', abbr: "h", help: "usage");
+  parser.addFlag('help', abbr: "b", help: "usage");
   parser.addFlag('console',
       abbr: "c", help: "show log in console", defaultsTo: true);
 
@@ -23,12 +25,13 @@ main(List<String> args) {
   }
 
   String outputPath = results["output"];
-
-  int port = int.tryParse(results["port"]);
+  String host = results['host'];
+  int? port = int.tryParse(results["port"]);
 
   var server = log4d.Log4dServer(
-    outpath: outputPath,
-    port: port,
+    host: host,
+    outPath: outputPath,
+    port: port ?? 8899,
     showConsole: results["console"],
   );
   server.serve();

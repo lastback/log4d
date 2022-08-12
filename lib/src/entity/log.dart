@@ -5,9 +5,9 @@ class LogEntity {
 
   Level level = Level.debug;
 
-  bool showTime = true;
+  bool showTime = false;
 
-  bool showColor = true;
+  bool showColor = false;
 
   bool force = false;
 
@@ -26,10 +26,10 @@ class LogEntity {
   }
 
   LogEntity({
-    this.msg,
+    required this.msg,
     this.level = Level.debug,
-    this.showTime = true,
-    this.showColor = true,
+    this.showTime = false,
+    this.showColor = false,
     this.force = false,
   });
 
@@ -39,14 +39,14 @@ class LogEntity {
       return LogEntity(
         msg: map["msg"] ?? "",
         level: Level.values[(map["level"] ?? 0)],
-        showTime: map["showTime"] ?? true,
-        showColor: map["showColor"] ?? true,
+        showTime: map["showTime"] ?? false,
+        showColor: map["showColor"] ?? false,
         force: map["force"] ?? false,
       );
     } on Error {
-      return null;
+      rethrow;
     } on Exception {
-      return null;
+      rethrow;
     }
   }
 
